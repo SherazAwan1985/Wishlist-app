@@ -13,17 +13,16 @@ import {
   Tabs,
   Icon,
   Box,
+  Popover,
+  Divider,
+  Checkbox,
+  Badge,
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 
 export default function CustomizeWishlistPlus() {
   const [selectedTab, setSelectedTab] = useState(1);
   const handleTabChange = useCallback((selectedTabIndex) => setSelectedTab(selectedTabIndex), []);
-    const [PrimaryColor, setPrimaryColor] = useState({
-      hue: 120,
-    brightness: 1,
-    saturation: 1,
-    }); 
   const tabs = [
     { id: "basics", content: "Basics" },
     { id: "product-page", content: "Product Page" },
@@ -33,34 +32,314 @@ export default function CustomizeWishlistPlus() {
   ];
 
   // Settings states
-  const heartIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
-  <path d="M8.96173 18.9109L9.42605 18.3219L8.96173 18.9109ZM12 5.50063L11.4596 6.02073C11.601 6.16763 11.7961 6.25063 12 6.25063C12.2039 6.25063 12.399 6.16763 12.5404 6.02073L12 5.50063ZM15.0383 18.9109L15.5026 19.4999L15.0383 18.9109ZM9.42605 18.3219C7.91039 17.1271 6.25307 15.9603 4.93829 14.4798C3.64922 13.0282 2.75 11.3345 2.75 9.1371H1.25C1.25 11.8026 2.3605 13.8361 3.81672 15.4758C5.24723 17.0866 7.07077 18.3752 8.49742 19.4999L9.42605 18.3219ZM2.75 9.1371C2.75 6.98623 3.96537 5.18252 5.62436 4.42419C7.23607 3.68748 9.40166 3.88258 11.4596 6.02073L12.5404 4.98053C10.0985 2.44352 7.26409 2.02539 5.00076 3.05996C2.78471 4.07292 1.25 6.42503 1.25 9.1371H2.75ZM8.49742 19.4999C9.00965 19.9037 9.55954 20.3343 10.1168 20.6599C10.6739 20.9854 11.3096 21.25 12 21.25V19.75C11.6904 19.75 11.3261 19.6293 10.8736 19.3648C10.4213 19.1005 9.95208 18.7366 9.42605 18.3219L8.49742 19.4999ZM15.5026 19.4999C16.9292 18.3752 18.7528 17.0866 20.1833 15.4758C21.6395 13.8361 22.75 11.8026 22.75 9.1371H21.25C21.25 11.3345 20.3508 13.0282 19.0617 14.4798C17.7469 15.9603 16.0896 17.1271 14.574 18.3219L15.5026 19.4999ZM22.75 9.1371C22.75 6.42503 21.2153 4.07292 18.9992 3.05996C16.7359 2.02539 13.9015 2.44352 11.4596 4.98053L12.5404 6.02073C14.5983 3.88258 16.7639 3.68748 18.3756 4.42419C20.0346 5.18252 21.25 6.98623 21.25 9.1371H22.75ZM14.574 18.3219C14.0479 18.7366 13.5787 19.1005 13.1264 19.3648C12.6739 19.6293 12.3096 19.75 12 19.75V21.25C12.6904 21.25 13.3261 20.9854 13.8832 20.6599C14.4405 20.3343 14.9903 19.9037 15.5026 19.4999L14.574 18.3219Z" fill="currentColor"/>
+  const heartIcon = `<svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path fill="currentColor" d="M12 22.59l-9.2-9.12C.43 11.09.43 7.21 2.8 4.83a6.03 6.03 0 0 1 4.29-1.79c1.62 0 3.14.63 4.29 1.79l.62.62.62-.62a6.014 6.014 0 0 1 4.29-1.79c1.62 0 3.14.63 4.29 1.79 2.37 2.38 2.37 6.26 0 8.64L12 22.59zM7.09 4c-1.37 0-2.65.54-3.61 1.51-2 2.01-2 5.28 0 7.29L12 21.25l8.53-8.45c2-2.01 2-5.28 0-7.29A5.079 5.079 0 0 0 16.92 4c-1.37 0-2.65.54-3.61 1.51l-1.3 1.3-1.3-1.3C9.75 4.54 8.46 4.01 7.1 4z"/><path fill="none" d="M0 0h24v24H0z"/>
   </svg>`;
-  const starIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
-  <path d="M11.2691 4.41115C11.5006 3.89177 11.6164 3.63208 11.7776 3.55211C11.9176 3.48263 12.082 3.48263 12.222 3.55211C12.3832 3.63208 12.499 3.89177 12.7305 4.41115L14.5745 8.54808C14.643 8.70162 14.6772 8.77839 14.7302 8.83718C14.777 8.8892 14.8343 8.93081 14.8982 8.95929C14.9705 8.99149 15.0541 9.00031 15.2213 9.01795L19.7256 9.49336C20.2911 9.55304 20.5738 9.58288 20.6997 9.71147C20.809 9.82316 20.8598 9.97956 20.837 10.1342C20.8108 10.3122 20.5996 10.5025 20.1772 10.8832L16.8125 13.9154C16.6877 14.0279 16.6252 14.0842 16.5857 14.1527C16.5507 14.2134 16.5288 14.2807 16.5215 14.3503C16.5132 14.429 16.5306 14.5112 16.5655 14.6757L17.5053 19.1064C17.6233 19.6627 17.6823 19.9408 17.5989 20.1002C17.5264 20.2388 17.3934 20.3354 17.2393 20.3615C17.0619 20.3915 16.8156 20.2495 16.323 19.9654L12.3995 17.7024C12.2539 17.6184 12.1811 17.5765 12.1037 17.56C12.0352 17.5455 11.9644 17.5455 11.8959 17.56C11.8185 17.5765 11.7457 17.6184 11.6001 17.7024L7.67662 19.9654C7.18404 20.2495 6.93775 20.3915 6.76034 20.3615C6.60623 20.3354 6.47319 20.2388 6.40075 20.1002C6.31736 19.9408 6.37635 19.6627 6.49434 19.1064L7.4341 14.6757C7.46898 14.5112 7.48642 14.429 7.47814 14.3503C7.47081 14.2807 7.44894 14.2134 7.41394 14.1527C7.37439 14.0842 7.31195 14.0279 7.18708 13.9154L3.82246 10.8832C3.40005 10.5025 3.18884 10.3122 3.16258 10.1342C3.13978 9.97956 3.19059 9.82316 3.29993 9.71147C3.42581 9.58288 3.70856 9.55304 4.27406 9.49336L8.77835 9.01795C8.94553 9.00031 9.02911 8.99149 9.10139 8.95929C9.16534 8.93081 9.2226 8.8892 9.26946 8.83718C9.32241 8.77839 9.35663 8.70162 9.42508 8.54808L11.2691 4.41115Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
+  const heartIconFill = `<svg width="24px" height="24px" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor"  d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" fill="currentColor"/>
+    </svg>`;
+  const starIcon = `<svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path  fill="currentColor"  d="M23.054 8.781l-7.536-.635-2.965-7.082a.619.619 0 0 0-1.155 0L8.433 8.145.896 8.78a.607.607 0 0 0-.357 1.1l5.726 4.96-1.729 7.395a.63.63 0 0 0 .223.679.573.573 0 0 0 .339.108.717.717 0 0 0 .374-.111l6.503-3.954 6.503 3.953a.606.606 0 0 0 .935-.677l-1.727-7.392 5.725-4.96a.607.607 0 0 0-.357-1.099zm-6.48 5.698l1.662 7.113-6.261-3.806-6.262 3.807 1.663-7.114-5.513-4.776 7.257-.611 2.855-6.817 2.855 6.817 7.257.611z"/><path fill="none" d="M0 0h24v24H0z"/></svg>`;
+  const starIconFill = `<svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M23.632 9.201a.628.628 0 0 1-.22.678l-5.726 4.96 1.727 7.394a.606.606 0 0 1-.935.676l-6.503-3.953-6.503 3.953a.713.713 0 0 1-.374.112.57.57 0 0 1-.34-.109.629.629 0 0 1-.222-.679l1.729-7.393L.539 9.879A.607.607 0 0 1 .897 8.78l7.536-.635 2.965-7.083a.62.62 0 0 1 1.155.001l2.965 7.082 7.536.635a .63 .63 .42z"/><path fill="none" d="M0 0h24v24H0z"/></svg>`;
 
   const [buttonPosition, setButtonPosition] = useState("below");
+  const [plpButtonPosition, setPlpButtonPosition] = useState("top-left");
+  const [showPlpButton, setShowPlpButton] = useState(true);
   const [WishlistIcon, setWishlistIcon] = useState("heart");
   const [pdpButtonType, setPdpButtonType] = useState("iconText");
   const [pdpButtonStyle, setPdpButtonStyle] = useState("solid");
   const [pdpLabel, setPdpLabel] = useState("Add To Wishlist");
+  const [pdpAddedLabel, setPdpAddedLabel] = useState("Added To Wishlist");
+  const [showLabel, setShowLabel] = useState("before-add");
+  const [buttonGridPosition, setButtonGridPosition] = useState("form");
+  const [primaryColor, setPrimaryColor] = useState({
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+  });
+  const [secondaryColor, setSecondaryColor] = useState({
+    hue: 0,
+    brightness: 1,
+    saturation: 0,
+  });
+  const [pcPopupActive, setpcPopupActive] = useState(false);
+  const [scPopupActive, setscPopupActive] = useState(false);
 
+  const togglepcPopupActive = useCallback(
+    () => setpcPopupActive((pcPopupActive) => !pcPopupActive),
+    [],
+  );
+
+  const toggleScPopupActive = useCallback(
+    () => setscPopupActive((scPopupActive) => !scPopupActive),
+    [],
+  );
+
+  // Convert HSB to hex for display
+  const hsbToHex = (hsb) => {
+    const { hue, saturation, brightness } = hsb;
+    const h = hue;
+    const s = saturation;
+    const v = brightness;
+
+    const c = v * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = v - c;
+
+    let r, g, b;
+    if (h >= 0 && h < 60) {
+      [r, g, b] = [c, x, 0];
+    } else if (h >= 60 && h < 120) {
+      [r, g, b] = [x, c, 0];
+    } else if (h >= 120 && h < 180) {
+      [r, g, b] = [0, c, x];
+    } else if (h >= 180 && h < 240) {
+      [r, g, b] = [0, x, c];
+    } else if (h >= 240 && h < 300) {
+      [r, g, b] = [x, 0, c];
+    } else {
+      [r, g, b] = [c, 0, x];
+    }
+
+    const toHex = (n) => {
+      const hex = Math.round((n + m) * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  };
+
+  const pcactivator = (
+    <div style={{ width: '100%' }}>
+      <div
+        onClick={togglepcPopupActive}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '4px 15px',
+          border: '1px solid #c4cdd5',
+          borderRadius: '4px',
+          backgroundColor: '#fff',
+          cursor: 'pointer',
+          minHeight: '30px',
+          minWidth: '180px',
+        }}
+      >
+        <div
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: hsbToHex(primaryColor),
+            border: '1px solid #e1e3e5',
+            flexShrink: 0,
+          }}
+        />
+        <span style={{ flex: 1, fontSize: '14px', color: '#202223' }}>
+          {hsbToHex(primaryColor)}
+        </span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          style={{ flexShrink: 0 }}
+        >
+          <path
+            d="M5 7.5L10 12.5L15 7.5"
+            stroke="#202223"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+  const scactivator = (
+    <div style={{ width: '100%' }}>
+      <div
+        onClick={toggleScPopupActive}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '4px 15px',
+          border: '1px solid #c4cdd5',
+          borderRadius: '4px',
+          backgroundColor: '#fff',
+          cursor: 'pointer',
+          minHeight: '30px',
+          minWidth: '180px',
+        }}
+      >
+        <div
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: hsbToHex(secondaryColor),
+            border: '1px solid #e1e3e5',
+            flexShrink: 0,
+          }}
+        />
+        <span style={{ flex: 1, fontSize: '14px', color: '#202223' }}>
+          {hsbToHex(secondaryColor)}
+        </span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          style={{ flexShrink: 0 }}
+        >
+          <path
+            d="M5 7.5L10 12.5L15 7.5"
+            stroke="#202223"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+
+  const IconRenderer = ({ icon }) => (
+    <span
+      dangerouslySetInnerHTML={{ __html: icon }}
+      style={{ display: "inline-flex", lineHeight: 0, alignItems: "center" }}
+    />
+  );
+  // Compose button inner content based on 
+  const ButtonInner = (
+    showLabel === "before-add" ?
+      pdpButtonType === "iconText" ? (
+        <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+          <IconRenderer icon={WishlistIcon === "heart" ? heartIcon : starIcon} />
+          <span>{pdpLabel}</span>
+        </span>
+      ) : pdpButtonType === "text" ? (
+        <span>{pdpLabel}</span>
+      ) : (
+        <IconRenderer icon={WishlistIcon === "heart" ? heartIcon : starIcon} />
+      ) :
+      pdpButtonType === "iconText" ? (
+        <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+          <IconRenderer icon={WishlistIcon === "heart" ? heartIconFill : starIconFill} />
+          <span>{pdpAddedLabel}</span>
+        </span>
+      ) : pdpButtonType === "text" ? (
+        <span>{pdpAddedLabel}</span>
+      ) : (
+        <IconRenderer icon={WishlistIcon === "heart" ? heartIconFill : starIconFill} />
+      )
+  );
+  // Add this helper function before renderPreview
+  const renderWishlistButton = () => {
+    const buttonStyles = {
+      solid: {
+        backgroundColor: hsbToHex(primaryColor),
+        color: hsbToHex(secondaryColor),
+        border: "none"
+      },
+      outline: {
+        backgroundColor: "transparent",
+        color: hsbToHex(primaryColor),
+        border: `1px solid ${hsbToHex(primaryColor)}`
+      },
+      plain: {
+        backgroundColor: "transparent",
+        color: hsbToHex(primaryColor),
+        border: "none"
+      }
+    };
+
+    const style = {
+      ...buttonStyles[pdpButtonStyle],
+      fontSize: 16,
+      borderRadius: 0,
+      padding: "10px 15px",
+      ...(buttonPosition === "right" && { flexShrink: 0, minWidth: "fit-content" })
+    };
+
+    return (
+      <button style={style}>
+        {ButtonInner}
+      </button>
+    );
+  };
   // Left-side tab content
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0: // Basics
         return (
           <Card>
-            <BlockStack gap="400">
-              <Text variant="headingMd" as="h2">Colors</Text>
-              <InlineStack gap="400">
-                <Text variant="headingMd">Primary Color</Text>
-                <ColorPicker
-                  color={PrimaryColor}
-                  onChange={setPrimaryColor}
-                   />
-              </InlineStack>
+            <BlockStack gap="1000">
+              <BlockStack gap="400">
+                <Text variant="headingMd" as="h2">Colors</Text>
+                <InlineStack gap="400" wrap={false} blockAlign="center" align="space-between">
+                  <Text variant="bodyMd" as="p">Primary Color</Text>
+                  <Popover
+                    active={pcPopupActive}
+                    activator={pcactivator}
+                    onClose={togglepcPopupActive}
+                    ariaHaspopup={false}
+                    sectioned
+                  >
+                    <ColorPicker
+                      color={primaryColor}
+                      onChange={setPrimaryColor}
+                    />
+                  </Popover>
+                </InlineStack>
+                <Divider />
+                <InlineStack gap="400" wrap={false} blockAlign="center" align="space-between">
+                  <Text variant="bodyMd" as="p">Secondary Color</Text>
+                  <Popover
+                    active={scPopupActive}
+                    activator={scactivator}
+                    onClose={toggleScPopupActive}
+                    ariaHaspopup={false}
+                    sectioned
+                  >
+                    <ColorPicker
+                      color={secondaryColor}
+                      onChange={setSecondaryColor}
+                    />
+                  </Popover>
+                </InlineStack>
+                <Divider />
+              </BlockStack>
+              <BlockStack gap="400">
+                <Text variant="headingMd" as="h2">Icons</Text>
+                <InlineStack gap="400" wrap={false} blockAlign="center">
+                  <Box background={WishlistIcon === 'heart' ? 'bg-fill-info' : 'bg-fill-secondary'} padding="200" borderRadius="200">
+                    <InlineStack gap="100" wrap={false} blockAlign="center">
+                      <RadioButton
+                        label="Heart Icon"
+                        id="heart"
+                        name="wishlistIcon"
+                        checked={WishlistIcon === 'heart'}
+                        onChange={setWishlistIcon.bind(null, 'heart')}
+                      />
+                      <IconRenderer icon={showLabel === "before-add" ? heartIcon : heartIconFill} />
+                    </InlineStack>
+                  </Box>
+                  <Box background={WishlistIcon === 'star' ? 'bg-fill-info' : 'bg-fill-secondary'} padding="200" borderRadius="200">
+                    <InlineStack gap="100" wrap={false} blockAlign="center">
+                      <RadioButton
+                        label="Star Icon"
+                        id="star"
+                        name="wishlistIcon"
+                        checked={WishlistIcon === 'star'}
+                        onChange={setWishlistIcon.bind(null, 'star')}
+                      />
+                      <IconRenderer icon={showLabel === "before-add" ? starIcon : starIconFill} />
+                    </InlineStack>
+                  </Box>
+                </InlineStack>
+              </BlockStack>
             </BlockStack>
           </Card>
         );
@@ -68,12 +347,27 @@ export default function CustomizeWishlistPlus() {
         return (
           <Card>
             <BlockStack gap="500">
-              <Text variant="headingMd" as="h2">Button Position</Text>
               <InlineStack gap="400">
-                <RadioButton label="Above Cart Button" checked={buttonPosition === "above"} id="above" name="buttonPosition" onChange={() => setButtonPosition("above")} />
-                <RadioButton label="Below Cart Button" checked={buttonPosition === "below"} id="below" name="buttonPosition" onChange={() => setButtonPosition("below")} />
-                <RadioButton label="Right of Cart Button" checked={buttonPosition === "right"} id="right" name="buttonPosition" onChange={() => setButtonPosition("right")} />
+                <Text variant="headingMd" as="h2">Button Position</Text>
+                <InlineStack gap="200" align="center">
+                  <Button fontSize="12" variant="tertiary" pressed={buttonGridPosition === "form"} padding="200" borderRadius="200" onClick={() => setButtonGridPosition("form")}>Near cart button</Button>
+                  <Button fontSize="12" variant="tertiary" pressed={buttonGridPosition === "media"} padding="200" borderRadius="200" onClick={() => setButtonGridPosition("media")}>On image</Button>
+                </InlineStack>
               </InlineStack>
+              {buttonGridPosition === "media" ? (
+                <InlineStack gap="400">
+                  <RadioButton label="Top Left on image" checked={buttonPosition === "top-left-image"} id="top-left-image" name="buttonPosition" onChange={() => { setButtonPosition("top-left-image"), setPdpButtonType("icon") }} />
+                  <RadioButton label="Top Right on image" checked={buttonPosition === "top-right-image"} id="top-right-image" name="buttonPosition" onChange={() => { setButtonPosition("top-right-image"), setPdpButtonType("icon") }} />
+                  <RadioButton label="Bottom Right on image" checked={buttonPosition === "bottom-right-image"} id="bottom-right-image" name="buttonPosition" onChange={() => { setButtonPosition("bottom-right-image"), setPdpButtonType("icon") }} />
+                  <RadioButton label="Bottom Left on image" checked={buttonPosition === "bottom-left-image"} id="bottom-left-image" name="buttonPosition" onChange={() => { setButtonPosition("bottom-left-image"), setPdpButtonType("icon") }} />
+                </InlineStack>
+              ) : (
+                <InlineStack gap="400">
+                  <RadioButton label="Above Cart Button" checked={buttonPosition === "above"} id="above" name="buttonPosition" onChange={() => setButtonPosition("above")} />
+                  <RadioButton label="Below Cart Button" checked={buttonPosition === "below"} id="below" name="buttonPosition" onChange={() => setButtonPosition("below")} />
+                  <RadioButton label="Right of Cart Button" checked={buttonPosition === "right"} id="right" name="buttonPosition" onChange={() => setButtonPosition("right")} />
+                </InlineStack>
+              )}
 
               <Text variant="headingMd" as="h2">Button Type</Text>
               <InlineStack gap="400">
@@ -88,9 +382,15 @@ export default function CustomizeWishlistPlus() {
                 <RadioButton label="Outline" checked={pdpButtonStyle === "outline"} id="outline" name="buttonStyle" onChange={() => setPdpButtonStyle("outline")} />
                 <RadioButton label="Plain" checked={pdpButtonStyle === "plain"} id="plain" name="buttonStyle" onChange={() => setPdpButtonStyle("plain")} />
               </InlineStack>
-
-              <Text variant="headingMd" as="h2">Button Text</Text>
-              <TextField label="Label" value={pdpLabel} onChange={setPdpLabel} autoComplete="off" />
+              <InlineStack gap="400">
+                <Text variant="headingMd" as="h2">Button Text</Text>
+                <InlineStack gap="200" align="center">
+                  <Button fontSize="12" variant={showLabel === 'before-add' ? 'primary' : 'secondary'} padding="200" borderRadius="200" onClick={() => setShowLabel("before-add")}>Before adding</Button>
+                  <Button fontSize="12" variant={showLabel === 'after-add' ? 'primary' : 'secondary'} padding="200" borderRadius="200" onClick={() => setShowLabel("after-add")}>After adding</Button>
+                </InlineStack>
+              </InlineStack>
+              {showLabel === "after-add" && <TextField value={pdpAddedLabel} onChange={setPdpAddedLabel} autoComplete="off" />}
+              {showLabel === "before-add" && <TextField value={pdpLabel} onChange={setPdpLabel} autoComplete="off" />}
             </BlockStack>
           </Card>
         );
@@ -98,8 +398,16 @@ export default function CustomizeWishlistPlus() {
         return (
           <Card>
             <BlockStack gap="400">
-              <Text variant="headingMd" as="h2">Collections</Text>
-              <Text as="p">Options to show wishlist actions on collection grids and quick add cards.</Text>
+            <Checkbox label="Enable shoppers to add items to wishlist from Collections pages" checked={showPlpButton} id="show-plp-button" name="showPlpButton" onChange={() => setShowPlpButton(!showPlpButton)} />
+              <Divider />
+              <Text variant="headingMd" as="h2">Button Position</Text>
+              <InlineGrid columns={2} gap="400">
+                  <RadioButton disabled={!showPlpButton} label="Top Left" checked={plpButtonPosition === "top-left"} id="top-left" name="buttonPosition" onChange={() => setPlpButtonPosition("top-left")} />
+                    <RadioButton disabled={!showPlpButton} label="Top Right" checked={plpButtonPosition === "top-right"} id="top-right" name="buttonPosition" onChange={() => setPlpButtonPosition("top-right")} />
+                    <RadioButton disabled={!showPlpButton} label="Bottom Right" checked={plpButtonPosition === "bottom-right"} id="bottom-right" name="buttonPosition" onChange={() => setPlpButtonPosition("bottom-right")} />
+                  <RadioButton disabled={!showPlpButton} label="Bottom Left" checked={plpButtonPosition === "bottom-left"} id="bottom-left" name="buttonPosition" onChange={() => setPlpButtonPosition("bottom-left")} />
+                </InlineGrid>
+
             </BlockStack>
           </Card>
         );
@@ -130,76 +438,198 @@ export default function CustomizeWishlistPlus() {
   const renderPreview = () => {
     const heading = tabs[selectedTab]?.content || "Preview";
     // Helper to render the selected icon string as an element
-    const IconEl = (
-      <span
-        aria-hidden
-        style={{ display: "inline-flex", lineHeight: 0 }}
-        dangerouslySetInnerHTML={{ __html: WishlistIcon === "heart" ? heartIcon : starIcon }}
-      />
-    );
-    // Compose button inner content based on 
-    const ButtonInner = (
-      pdpButtonType === "iconText" ? (
-        <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-          {IconEl}
-          <span>{pdpLabel}</span>
-        </span>
-      ) : pdpButtonType === "text" ? (
-        <span>{pdpLabel}</span>
-      ) : (
-        IconEl
-      )
-    );
-    return (
-      <Card>
-        <BlockStack gap="400" align="center">
-          <Text variant="headingMd" as="h2">{heading} Preview</Text>
-          <InlineGrid columns={2} gap="500">
-            <BlockStack>
-            <div style={{ background: "#f6f6f7", width: "100%", height: 400, borderRadius: 5 }} />
+    switch (selectedTab) {
+      case 0: // Basics
+        return (
+          <Card>
+            <BlockStack gap="400" align="center">
+             <Box>
+              <Badge>Mock Preview</Badge>
+              </Box>
+                 <Divider />
+              <InlineGrid columns={2} gap="500">
+                <BlockStack>
+                  <div style={{ background: "#E3E3E3", width: "100%", height: 400, borderRadius: 5, position: "relative" }} >
+                    {buttonPosition === "top-left-image" || buttonPosition === "top-right-image" || buttonPosition === "bottom-left-image" || buttonPosition === "bottom-right-image" ? (
+                      <div style={{ position: "absolute", top: buttonPosition === "top-left-image" || buttonPosition === "top-right-image" ? 10 : "auto", left: buttonPosition === "top-left-image" || buttonPosition === "bottom-left-image" ? 10 : "auto", right: buttonPosition === "top-right-image" || buttonPosition === "bottom-right-image" ? 10 : "auto", bottom: buttonPosition === "bottom-left-image" || buttonPosition === "bottom-right-image" ? 10 : "auto" }}>
+                        {renderWishlistButton()}
+                      </div>
+                    ) : null}
+                  </div>
+                </BlockStack>
+                <BlockStack>
+                  <BlockStack gap="1000">
+                    <BlockStack gap="500">
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "70%", height: 40, borderRadius: 5 }} />
+                    </BlockStack>
+                    <BlockStack gap="200">
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 10, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 10, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "70%", height: 10, borderRadius: 5 }} />
+                    </BlockStack>
+                    <BlockStack gap="300">
+                      {/* Add to Cart Button - shows above wishlist button when position is "above" */}
+                      {buttonPosition === "below" && (
+                        <BlockStack>
+                          <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5 }} />
+                        </BlockStack>
+                      )}
+                      {buttonPosition === "right" ? (
+                        <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                          <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5, flex: 1 }} />
+                          {renderWishlistButton()}
+                        </div>
+                      ) : (
+                        <>
+                          {buttonPosition === "above" || buttonPosition === "below" ?
+                            renderWishlistButton()
+                            : null}
+                          {buttonPosition === "above" ? (
+                            <BlockStack>
+                              <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5 }} />
+                            </BlockStack>
+                          ) : null}
+                        </>
+                      )}
+                    </BlockStack>
+                  </BlockStack>
+                </BlockStack>
+              </InlineGrid>
             </BlockStack>
-            <BlockStack>
-              <BlockStack gap="1000">
-              <BlockStack gap="500">
-            <div style={{ background: "#f6f6f7", width: "100%", height: 40, borderRadius: 5 }} />
-            <div style={{ background: "#f6f6f7", width: "70%", height: 40, borderRadius: 5 }} />
+          </Card>
+        );
+      case 1:
+        return (
+         <Card>
+            <BlockStack gap="400" align="center">
+             <Box>
+              <Badge>Mock Preview</Badge>
+              </Box>
+                 <Divider />
+              <InlineGrid columns={2} gap="500">
+                <BlockStack>
+                  <div style={{ background: "#E3E3E3", width: "100%", height: 400, borderRadius: 5, position: "relative" }} >
+                    {buttonPosition === "top-left-image" || buttonPosition === "top-right-image" || buttonPosition === "bottom-left-image" || buttonPosition === "bottom-right-image" ? (
+                      <div style={{ position: "absolute", top: buttonPosition === "top-left-image" || buttonPosition === "top-right-image" ? 10 : "auto", left: buttonPosition === "top-left-image" || buttonPosition === "bottom-left-image" ? 10 : "auto", right: buttonPosition === "top-right-image" || buttonPosition === "bottom-right-image" ? 10 : "auto", bottom: buttonPosition === "bottom-left-image" || buttonPosition === "bottom-right-image" ? 10 : "auto" }}>
+                        {renderWishlistButton()}
+                      </div>
+                    ) : null}
+                  </div>
+                </BlockStack>
+                <BlockStack>
+                  <BlockStack gap="1000">
+                    <BlockStack gap="500">
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "70%", height: 40, borderRadius: 5 }} />
+                    </BlockStack>
+                    <BlockStack gap="200">
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 10, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 10, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "70%", height: 10, borderRadius: 5 }} />
+                    </BlockStack>
+                    <BlockStack gap="300">
+                      {/* Add to Cart Button - shows above wishlist button when position is "above" */}
+                      {buttonPosition === "below" && (
+                        <BlockStack>
+                          <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5 }} />
+                        </BlockStack>
+                      )}
+                      {buttonPosition === "right" ? (
+                        <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                          <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5, flex: 1 }} />
+                          {renderWishlistButton()}
+                        </div>
+                      ) : (
+                        <>
+                          {buttonPosition === "above" || buttonPosition === "below" ?
+                            renderWishlistButton()
+                            : null}
+                          {buttonPosition === "above" ? (
+                            <BlockStack>
+                              <div style={{ background: "#E3E3E3", width: "100%", height: 50, borderRadius: 5 }} />
+                            </BlockStack>
+                          ) : null}
+                        </>
+                      )}
+                    </BlockStack>
+                  </BlockStack>
+                </BlockStack>
+              </InlineGrid>
             </BlockStack>
-              <BlockStack gap="200">
-            <div style={{ background: "#f6f6f7", width: "100%", height: 10, borderRadius: 5  }} />
-            <div style={{ background: "#f6f6f7", width: "100%", height: 10, borderRadius: 5 }} />
-            <div style={{ background: "#f6f6f7", width: "70%", height: 10, borderRadius: 5 }} />
+          </Card>
+        );
+      case 2: // Collections
+        return (
+          <Card>
+            <BlockStack gap="400" align="center">
+            <Box>
+              <Badge>Mock Preview</Badge>
+              </Box>
+                 <Divider />
+              <InlineGrid columns={3} gap="500">
+                {Array.from({ length: 6 }).map((_, i) => (
+                      <Box borderColor="border" borderWidth="025" key={i} padding="400" borderRadius="200">
+                      <BlockStack gap="300">
+                      <BlockStack>
+                        <div style={{ background: "#E3E3E3", width: "100%", height: 200, borderRadius: 5, position: "relative" }}>
+                          {plpButtonPosition === "top-left" || plpButtonPosition === "top-right" || plpButtonPosition === "bottom-left" || plpButtonPosition === "bottom-right" ? (
+                            <div style={{ 
+                              position: "absolute", 
+                              color: hsbToHex(primaryColor),
+                              top: plpButtonPosition === "top-left" || plpButtonPosition === "top-right" ? 10 : "auto", 
+                              left: plpButtonPosition === "top-left" || plpButtonPosition === "bottom-left" ? 10 : "auto", 
+                              right: plpButtonPosition === "top-right" || plpButtonPosition === "bottom-right" ? 10 : "auto", 
+                              bottom: plpButtonPosition === "bottom-left" || plpButtonPosition === "bottom-right" ? 10 : "auto" 
+                            }}>
+                             {showPlpButton && <IconRenderer icon={WishlistIcon === "heart" ? heartIcon : starIcon} />}
+                            </div>
+                          ) : null}
+                        </div>
+                      </BlockStack>
+                      <BlockStack gap="200">
+                      <div style={{ background: "#E3E3E3", width: "70%", height: 30, borderRadius: 5 }} />
+                      <div style={{ background: "#E3E3E3", width: "100%", height: 10, borderRadius: 5 }} />
+                    </BlockStack>
+                    </BlockStack>
+                    </Box>
+                    ))}
+              </InlineGrid>
             </BlockStack>
-              <BlockStack>
-            <div style={{ background: "#f6f6f7", width: "100%", height: 50, borderRadius: 5 }} />
+          </Card>
+        );
+      case 3: // Wishlist Page
+        return (
+          <Card>
+            <BlockStack gap="400" align="center">
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
             </BlockStack>
+          </Card>
+        );
+      case 4: // Cart
+        return (
+          <Card>
+            <BlockStack gap="400" align="center">
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
+              <div style={{ background: "#E3E3E3", width: "100%", height: 40, borderRadius: 5 }} />
             </BlockStack>
-            {pdpButtonStyle === "solid" ? (
-              <button style={{ backgroundColor: "#000", marginTop: 10, fontSize: 16, color: "#fff", borderRadius: 0, padding: 15, border: "none" }}>
-                {ButtonInner}
-              </button>
-            ) : pdpButtonStyle === "outline" ? (
-              <button style={{ backgroundColor: "transparent", marginTop: 10, fontSize: 16, color: "#000", borderRadius: 0, padding: 15, border: "1px solid #000" }}>
-                {ButtonInner}
-              </button>
-            ) : (
-              <button style={{ backgroundColor: "transparent", marginTop: 10, fontSize: 16, color: "#000", borderRadius: 0, padding: 15, border: "none" }}>
-                {ButtonInner}
-              </button>
-            )}
-            </BlockStack>
-          </InlineGrid>
-        </BlockStack>
-      </Card>
-    );
+          </Card>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-      <Page fullWidth title="Customize Wishlist Plus" >
-        <BlockStack gap="500">
+    <Page fullWidth title="Customize Wishlist Plus" >
+      <BlockStack gap="500">
         {/* Tabs */}
         <Card
           background="bg-surface-secondary"
-          padding="100" 
+          padding="100"
         >
           <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange} />
         </Card>
@@ -212,10 +642,10 @@ export default function CustomizeWishlistPlus() {
                 {renderTabContent()}
                 {renderPreview()}
               </InlineGrid>
-          </Box>
-          </Layout.Section> 
+            </Box>
+          </Layout.Section>
         </Layout>
-        </BlockStack>
-      </Page>
+      </BlockStack>
+    </Page>
   );
 }
